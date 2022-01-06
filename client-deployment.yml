@@ -1,0 +1,34 @@
+# The version is different from other files because apiVersion: v1 doesn't have the Deployment object
+apiVersion: apps/v1
+# Deployment is a type of object that runs a set of identical pods (one or more).
+# It monitors the state of each pod updating as necessary.
+# Since single Pods cannot be updated (except for a few properties) they are rarely used in production
+# Deployment objects are good for both development and production
+# Using Deployment allows us to update the config of the Pods it runs
+kind: Deployment
+metadata:
+  name: client-deployment
+spec:
+  # The number of pods that this Deployment will run
+  replicas: 1
+  # The selector is used to find the pods managed by the Deployment
+  # It must match the label in the template
+  selector:
+    matchLabels:
+      component: web
+  # This template defines the config of the pods running inside the deployment
+  # All pods share the same config (are identical)
+  template:
+    metadata:
+      labels:
+        component: web
+    spec:
+      containers:
+        - name: client
+          image: stephengrider/multi-client
+          resources:
+            limits:
+              memory: '128Mi'
+              cpu: '500m'
+          ports:
+            - containerPort: 3000

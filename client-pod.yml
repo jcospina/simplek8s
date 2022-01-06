@@ -1,0 +1,31 @@
+# Each config file creates Objects
+# An object is something that exists inside the kubernetes cluster that serves different purposes
+# Like running a container, monitoring a container, setting up networking, etc.
+
+# apiVersion defines a different set of objects we can use
+apiVersion: v1
+# kind especifies the type of object we want to create
+# A Pod is a grouping of containers that serve a very similar purpose and must be running togheter
+# A Pod is the smallest thing that can be deployed to Kubernetes
+# Pods are deployed to Nodes which are virtual machines that can hold a number of different objects
+# A Pod doesn't equal to a container. It could contain a single container but usually holds more than one
+# A single pod is usually good for one-off dev purposes but no for production since most of the config cannot be updated
+kind: Pod
+metadata:
+  # The name will show up in logs and it is used by the master for comparing
+  name: client-pod
+  # The label is used to identify the Pod (or Object) in Services, it can be any key-value pair
+  labels:
+    component: web
+spec:
+  # The containers that are going to run inside the pod
+  containers:
+    - name: client
+      image: stephengrider/multi-client
+      resources:
+        limits:
+          memory: '128Mi'
+          cpu: '500m'
+      ports:
+        # The port we want to expose to the outside
+        - containerPort: 3000

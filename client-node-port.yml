@@ -1,0 +1,22 @@
+apiVersion: v1
+# Services are used to setup networking in a Kubernetes Cluster
+# Services has 4 subtypes: ClusterIp, NodePort, LoadBalancer and Ingress
+# Services are also deployed to Nodes
+kind: Service
+metadata:
+  name: client-node-port
+spec:
+  # A NodePort service exposes a container to the outside world
+  # This are usually used for development purposes
+  # Nodes have a program called kube-proxy that is the only outside window to the outside world for such node
+  # The kube-proxy takes incoming requests and decides how to route them to the Services inside the node
+  type: NodePort
+  # The selector is used to look for every object with label component: web and traffic will be redirected to
+  # those objects using the port configuration below
+  selector:
+    component: web
+  # The port configuration to redirect traffic
+  ports:
+    - port: 3050 # A port that other Pods can use to communicate with this one
+      targetPort: 3000 # The port inside that pod we want to open traffic to. It is the same as defined in containerPort in client-pod.yml
+      nodePort: 31515 # The port we as developers can use to get access to the Pod from the browser. It must be in the range 30000 - 32767
